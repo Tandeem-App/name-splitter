@@ -7,6 +7,26 @@ from io import BytesIO
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
 
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({'error': 'Page non trouvée'}), 404
+
+
+@app.errorhandler(413)
+def too_large(e):
+    return jsonify({'error': 'Fichier trop volumineux (max 16MB)'}), 413
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return jsonify({'error': 'Erreur interne du serveur'}), 500
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({'error': str(e)}), 500
+
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 

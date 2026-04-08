@@ -642,7 +642,7 @@
 
         try {
             const res = await fetch('/api/upload', { method: 'POST', body: formData });
-            const data = await res.json();
+            const data = await safeJson(res);
             if (!res.ok) throw new Error(data.error || 'Erreur serveur');
 
             state.fileId = data.file_id;
@@ -702,7 +702,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ file_id: state.fileId, column_index: state.columnIndex })
             });
-            const data = await res.json();
+            const data = await safeJson(res);
             if (!res.ok) throw new Error(data.error || 'Erreur serveur');
 
             state.names = data.names;
@@ -973,6 +973,15 @@
     }
 
     // ==================== UTILITIES ====================
+    async function safeJson(res) {
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            throw new Error('Erreur serveur. Veuillez réessayer.');
+        }
+    }
+
     function escapeHtml(str) {
         if (str === null || str === undefined) return '';
         const div = document.createElement('div');
