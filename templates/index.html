@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Séparateur de Noms | Prénom - Nom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --success: #10b981;
+            --prenom-bg: #d1fae5;
+            --prenom-text: #065f46;
+            --prenom-border: #6ee7b7;
+            --nom-bg: #dbeafe;
+            --nom-text: #1e40af;
+            --nom-border: #93c5fd;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        body {
+            background: var(--gray-50);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: var(--gray-900);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .app-navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0.875rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-navbar .brand {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Steps bar */
+        .steps-bar {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem auto;
+            max-width: 650px;
+        }
+
+        .step-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray-500);
+            background: white;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .step-pill:first-child { border-radius: 24px 0 0 24px; }
+        .step-pill:last-child { border-radius: 0 24px 24px 0; }
+
+        .step-pill .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: var(--gray-200);
+            color: var(--gray-500);
+            flex-shrink: 0;
+        }
+
+        .step-pill.completed {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .step-pill.completed .step-num {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .step-pill.active .step-num {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Step content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card */
+        .app-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--gray-100);
+            font-weight: 600;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .dropzone .icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Column selector buttons */
+        .col-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+
+        .col-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        /* Chips */
+        .chip {
+            display: inline-block;
+            padding: 4px 14px;
+            margin: 2px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1.5px solid;
+        }
+
+        .chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .chip:active {
+            transform: scale(0.97);
+        }
+
+        .chip-prenom {
+            background: var(--prenom-bg);
+            color: var(--prenom-text);
+            border-color: var(--prenom-border);
+        }
+
+        .chip-nom {
+            background: var(--nom-bg);
+            color: var(--nom-text);
+            border-color: var(--nom-border);
+        }
+
+        /* Names table */
+        .names-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .names-table th {
+            background: var(--gray-50);
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-500);
+            border-bottom: 2px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .names-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+
+        .names-table tr:hover td {
+            background: var(--gray-50);
+        }
+
+        .chips-cell {
+            min-width: 180px;
+        }
+
+        .result-cell {
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .prenom-result { color: var(--prenom-text); }
+        .nom-result { color: var(--nom-text); }
+
+        /* Stats badge */
+        .stat-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Filter tabs */
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: white;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-700);
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover { border-color: var(--primary); }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Pagination */
+        .page-link-custom {
+            padding: 6px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            margin: 0 2px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: white;
+            color: var(--gray-700);
+            text-decoration: none;
+            display: inline-block;
+            line-height: 1;
+        }
+
+        .page-link-custom:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-link-custom.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .page-link-custom.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .steps-bar { flex-wrap: wrap; gap: 4px; }
+            .step-pill { font-size: 0.75rem; padding: 6px 12px; border-radius: 20px !important; }
+            .card-body-custom { padding: 1rem; }
+            .action-bar-wrap { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading">
+        <div class="text-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+            <p class="mt-3 text-muted fw-medium" id="loadingText">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Navbar -->
+    <nav class="app-navbar">
+        <div class="container">
+            <span class="brand">
+                <i class="bi bi-scissors"></i>
+                Séparateur de Noms
+            </span>
+        </div>
+    </nav>
+
+    <!-- Steps Bar -->
+    <div class="steps-bar" id="stepsBar">
+        <div class="step-pill active" data-step="1">
+            <span class="step-num">1</span> Importer
+        </div>
+        <div class="step-pill" data-step="2">
+            <span class="step-num">2</span> Colonne
+        </div>
+        <div class="step-pill" data-step="3">
+            <span class="step-num">3</span> Vérifier
+        </div>
+        <div class="step-pill" data-step="4">
+            <span class="step-num">4</span> Terminé
+        </div>
+    </div>
+
+    <div class="container pb-5">
+
+        <!-- ==================== STEP 1: UPLOAD ==================== -->
+        <div id="step1" class="step-content active">
+            <div class="app-card mx-auto" style="max-width: 600px;">
+                <div class="card-body-custom">
+                    <div class="dropzone" id="dropzone">
+                        <div class="icon"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+                        <h5 class="mb-2">Glissez votre fichier Excel ici</h5>
+                        <p class="text-muted mb-3">ou cliquez pour parcourir</p>
+                        <button class="btn btn-primary btn-lg" onclick="document.getElementById('fileInput').click()">
+                            <i class="bi bi-folder2-open me-2"></i>Choisir un fichier
+                        </button>
+                        <input type="file" id="fileInput" accept=".xlsx" hidden>
+                        <p class="text-muted mt-3 mb-0" style="font-size: 0.85rem;">
+                            Format accepté : <strong>.xlsx</strong> (Excel)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STEP 2: COLUMN SELECTION ==================== -->
+        <div id="step2" class="step-content">
+            <div class="app-card mx-auto" style="max-width: 900px;">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-table me-2"></i>Sélectionner la colonne des noms</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="goToStep(1)">
+                        <i class="bi bi-arrow-left me-1"></i>Retour
+                    </button>
+                </div>
+                <div class="card-body-custom">
+                    <p class="text-muted mb-2">
+                        Fichier : <strong id="filenameBadge"></strong>
+                        (<span id="rowCountBadge"></span> lignes)
+                    </p>
+                    <p class="text-muted mb-3">Cliquez sur la colonne qui contient les noms complets (Prénom + Nom) :</p>
+                    <div id="columnButtons" class="d-flex flex-wrap gap-2 mb-4"></div>
+
+                    <h6 class="text-muted mb-2 mt-4">
+                        <i class="bi bi-eye me-1"></i>Aperçu des données :
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered mb-0" id="previewTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STEP 3: REVIEW & SPLIT ==================== -->
+        <div id="step3" class="step-content">
+            <div class="app-card">
+                <div class="card-header-custom d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-pencil-square me-2"></i>Vérifier et ajuster la séparation</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="goToStep(2)">
+                        <i class="bi bi-arrow-left me-1"></i>Retour
+                    </button>
+                </div>
+                <div class="card-body-custom">
+
+                    <!-- Legend -->
+                    <div class="alert alert-light border mb-3 py-2" style="font-size: 0.9rem;">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Comment ça marche :</strong>
+                        Cliquez sur un mot pour déplacer la séparation.
+                        <span class="chip chip-prenom ms-1" style="cursor: default; font-size: 0.8rem;">Prénom</span>
+                        <span class="chip chip-nom ms-1" style="cursor: default; font-size: 0.8rem;">Nom</span>
+                    </div>
+
+                    <!-- Stats + Filters -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div id="statsBar" class="d-flex gap-2 flex-wrap"></div>
+                        <div class="d-flex gap-2">
+                            <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">Tous</button>
+                            <button class="filter-tab" data-filter="review" onclick="setFilter('review')">Composés</button>
+                            <button class="filter-tab" data-filter="simple" onclick="setFilter('simple')">Simples</button>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions + Search -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 action-bar-wrap">
+                        <div class="d-flex gap-2 flex-wrap align-items-center">
+                            <span class="text-muted" style="font-size: 0.85rem;">Actions rapides :</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="bulkSplit('last-1')"
+                                    title="Le dernier mot sera le Nom pour tous">
+                                Dernier = Nom
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="bulkSplit('last-2')"
+                                    title="Les 2 derniers mots seront le Nom pour tous">
+                                2 derniers = Nom
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="bulkSplit('first-1')"
+                                    title="Seul le premier mot sera le Prénom pour tous">
+                                1er = Prénom
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="bulkSplit('reset')"
+                                    title="Réinitialiser la séparation par défaut">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <input type="text" class="form-control form-control-sm" placeholder="Rechercher..."
+                                   id="searchInput" oninput="searchNames(this.value)" style="width: 200px;">
+                        </div>
+                    </div>
+
+                    <!-- Names Table -->
+                    <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;" id="tableContainer">
+                        <table class="names-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th style="min-width: 150px;">Nom complet</th>
+                                    <th style="min-width: 200px;">Cliquer pour séparer</th>
+                                    <th style="min-width: 120px;">Prénom</th>
+                                    <th style="min-width: 120px;">Nom</th>
+                                </tr>
+                            </thead>
+                            <tbody id="namesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div id="paginationInfo" class="text-muted" style="font-size: 0.85rem;"></div>
+                        <div id="pagination"></div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <button class="btn btn-lg btn-success px-5" id="downloadBtn" onclick="downloadResult()">
+                            <i class="bi bi-download me-2"></i>Télécharger le résultat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== STEP 4: DONE ==================== -->
+        <div id="step4" class="step-content">
+            <div class="app-card mx-auto text-center" style="max-width: 500px;">
+                <div class="card-body-custom py-5">
+                    <div style="font-size: 4rem; color: var(--success);">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h4 class="mt-3 mb-2">Fichier téléchargé !</h4>
+                    <p class="text-muted mb-4">
+                        Le fichier Excel avec les colonnes <strong>Prénom</strong> et <strong>Nom</strong> a été généré.
+                    </p>
+                    <button class="btn btn-primary btn-lg" onclick="resetApp()">
+                        <i class="bi bi-arrow-repeat me-2"></i>Traiter un autre fichier
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    // ==================== STATE ====================
+    const state = {
+        fileId: null,
+        headers: [],
+        preview: [],
+        rowCount: 0,
+        filename: '',
+        columnIndex: null,
+        names: [],
+        nameMap: {},
+        currentPage: 1,
+        searchQuery: '',
+        pageSize: 50,
+        filter: 'all'
+    };
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        initUpload();
+    });
+
+    // ==================== NAVIGATION ====================
+    function goToStep(step) {
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+
+        document.querySelectorAll('.step-pill').forEach((pill, i) => {
+            const s = i + 1;
+            pill.classList.remove('active', 'completed');
+            if (s < step) pill.classList.add('completed');
+            if (s === step) pill.classList.add('active');
+        });
+    }
+
+    // ==================== STEP 1: UPLOAD ====================
+    function initUpload() {
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropzone.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+                fileInput.click();
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+    }
+
+    async function handleFile(file) {
+        if (!file.name.toLowerCase().endsWith('.xlsx')) {
+            showToast('Veuillez sélectionner un fichier .xlsx', 'warning');
+            return;
+        }
+
+        showLoading(true, 'Lecture du fichier...');
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Erreur serveur');
+
+            state.fileId = data.file_id;
+            state.headers = data.headers;
+            state.preview = data.preview;
+            state.rowCount = data.row_count;
+            state.filename = data.filename;
+
+            renderColumnSelection();
+            goToStep(2);
+        } catch (err) {
+            showToast(err.message, 'danger');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // ==================== STEP 2: COLUMN SELECTION ====================
+    function renderColumnSelection() {
+        document.getElementById('filenameBadge').textContent = state.filename;
+        document.getElementById('rowCountBadge').textContent = state.rowCount;
+
+        // Column buttons
+        const container = document.getElementById('columnButtons');
+        container.innerHTML = state.headers.map((h, i) =>
+            '<button class="col-btn" onclick="selectColumn(' + i + ')">' +
+            '<i class="bi bi-layout-text-window-reverse me-1"></i>' +
+            escapeHtml(h) + '</button>'
+        ).join('');
+
+        // Preview table
+        const table = document.getElementById('previewTable');
+        let html = '<thead><tr>';
+        state.headers.forEach(h => {
+            html += '<th class="bg-light" style="font-size:0.85rem;">' + escapeHtml(h) + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+        state.preview.forEach(row => {
+            html += '<tr>';
+            for (let i = 0; i < state.headers.length; i++) {
+                const val = i < row.length ? row[i] : '';
+                html += '<td style="font-size:0.85rem;">' + escapeHtml(val) + '</td>';
+            }
+            html += '</tr>';
+        });
+        html += '</tbody>';
+        table.innerHTML = html;
+    }
+
+    async function selectColumn(index) {
+        state.columnIndex = index;
+        showLoading(true, 'Analyse des noms...');
+
+        try {
+            const res = await fetch('/api/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file_id: state.fileId, column_index: state.columnIndex })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Erreur serveur');
+
+            state.names = data.names;
+            state.nameMap = {};
+            state.names.forEach(n => { state.nameMap[n.index] = n; });
+            state.currentPage = 1;
+            state.searchQuery = '';
+            state.filter = 'all';
+
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.filter-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.filter === 'all');
+            });
+
+            renderNamesTable();
+            goToStep(3);
+        } catch (err) {
+            showToast(err.message, 'danger');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // ==================== STEP 3: REVIEW ====================
+    function getFilteredNames() {
+        let filtered = state.names.filter(n => n.parts && n.parts.length > 0);
+
+        if (state.searchQuery) {
+            filtered = filtered.filter(n =>
+                n.original.toLowerCase().includes(state.searchQuery)
+            );
+        }
+
+        if (state.filter === 'review') {
+            filtered = filtered.filter(n => n.parts.length >= 3);
+        } else if (state.filter === 'simple') {
+            filtered = filtered.filter(n => n.parts.length <= 2);
+        }
+
+        return filtered;
+    }
+
+    function renderNamesTable() {
+        const filtered = getFilteredNames();
+        const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
+        if (state.currentPage > totalPages) state.currentPage = totalPages;
+
+        const start = (state.currentPage - 1) * state.pageSize;
+        const pageNames = filtered.slice(start, start + state.pageSize);
+
+        document.getElementById('namesTableBody').innerHTML =
+            pageNames.map(n => renderNameRow(n)).join('');
+
+        renderPagination(filtered.length, totalPages);
+        renderStats();
+    }
+
+    function renderNameRow(name) {
+        const parts = name.parts;
+        const splitAt = name.splitAt;
+
+        let chipsHtml = '';
+        parts.forEach((part, i) => {
+            const isPrenom = i < splitAt;
+            const cls = isPrenom ? 'chip-prenom' : 'chip-nom';
+            chipsHtml += '<span class="chip ' + cls + '" onclick="toggleSplit(' +
+                name.index + ',' + i + ')">' + escapeHtml(part) + '</span>';
+        });
+
+        const prenom = parts.slice(0, splitAt).join(' ');
+        const nom = parts.slice(splitAt).join(' ');
+
+        return '<tr data-index="' + name.index + '">' +
+            '<td class="text-center text-muted">' + (name.index + 1) + '</td>' +
+            '<td>' + escapeHtml(name.original) + '</td>' +
+            '<td class="chips-cell">' + chipsHtml + '</td>' +
+            '<td class="result-cell prenom-result">' + escapeHtml(prenom) + '</td>' +
+            '<td class="result-cell nom-result">' + escapeHtml(nom) + '</td>' +
+            '</tr>';
+    }
+
+    function toggleSplit(nameIndex, wordIndex) {
+        const name = state.nameMap[nameIndex];
+        if (!name) return;
+
+        if (wordIndex < name.splitAt) {
+            // Was Prénom, make it Nom (split moves left)
+            name.splitAt = wordIndex;
+        } else {
+            // Was Nom, make it Prénom (split moves right)
+            name.splitAt = wordIndex + 1;
+        }
+
+        // Re-render just this row
+        const row = document.querySelector('tr[data-index="' + nameIndex + '"]');
+        if (row) {
+            row.outerHTML = renderNameRow(name);
+        }
+        renderStats();
+    }
+
+    function bulkSplit(mode) {
+        state.names.forEach(name => {
+            if (!name.parts || name.parts.length === 0) return;
+            const len = name.parts.length;
+
+            switch (mode) {
+                case 'last-1':
+                    name.splitAt = Math.max(len - 1, 0);
+                    break;
+                case 'last-2':
+                    name.splitAt = Math.max(len - 2, 0);
+                    break;
+                case 'first-1':
+                    name.splitAt = Math.min(1, len);
+                    break;
+                case 'reset':
+                    name.splitAt = len <= 1 ? len : len - 1;
+                    break;
+            }
+        });
+        renderNamesTable();
+    }
+
+    function searchNames(query) {
+        state.searchQuery = query.toLowerCase().trim();
+        state.currentPage = 1;
+        renderNamesTable();
+    }
+
+    function setFilter(filter) {
+        state.filter = filter;
+        state.currentPage = 1;
+        document.querySelectorAll('.filter-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.filter === filter);
+        });
+        renderNamesTable();
+    }
+
+    function setPage(page) {
+        state.currentPage = page;
+        renderNamesTable();
+        document.getElementById('tableContainer').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderPagination(totalItems, totalPages) {
+        const start = (state.currentPage - 1) * state.pageSize + 1;
+        const end = Math.min(state.currentPage * state.pageSize, totalItems);
+
+        document.getElementById('paginationInfo').textContent =
+            totalItems > 0 ? (start + '-' + end + ' sur ' + totalItems) : 'Aucun résultat';
+
+        if (totalPages <= 1) {
+            document.getElementById('pagination').innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        html += '<span class="page-link-custom ' + (state.currentPage <= 1 ? 'disabled' : '') +
+            '" onclick="setPage(' + (state.currentPage - 1) + ')">&#8249;</span>';
+
+        const maxVisible = 7;
+        let sp = Math.max(1, state.currentPage - Math.floor(maxVisible / 2));
+        let ep = Math.min(totalPages, sp + maxVisible - 1);
+        sp = Math.max(1, ep - maxVisible + 1);
+
+        if (sp > 1) {
+            html += '<span class="page-link-custom" onclick="setPage(1)">1</span>';
+            if (sp > 2) html += '<span class="page-link-custom disabled">&hellip;</span>';
+        }
+
+        for (let i = sp; i <= ep; i++) {
+            html += '<span class="page-link-custom ' + (i === state.currentPage ? 'active' : '') +
+                '" onclick="setPage(' + i + ')">' + i + '</span>';
+        }
+
+        if (ep < totalPages) {
+            if (ep < totalPages - 1) html += '<span class="page-link-custom disabled">&hellip;</span>';
+            html += '<span class="page-link-custom" onclick="setPage(' + totalPages + ')">' + totalPages + '</span>';
+        }
+
+        html += '<span class="page-link-custom ' + (state.currentPage >= totalPages ? 'disabled' : '') +
+            '" onclick="setPage(' + (state.currentPage + 1) + ')">&#8250;</span>';
+
+        document.getElementById('pagination').innerHTML = html;
+    }
+
+    function renderStats() {
+        const total = state.names.filter(n => n.parts && n.parts.length > 0).length;
+        const composite = state.names.filter(n => n.parts && n.parts.length >= 3).length;
+        const simple = total - composite;
+
+        document.getElementById('statsBar').innerHTML =
+            '<span class="stat-badge" style="background:var(--gray-100);">' +
+                '<i class="bi bi-people-fill me-1"></i>' + total + ' noms</span>' +
+            '<span class="stat-badge" style="background:#fef3c7;color:#92400e;">' +
+                '<i class="bi bi-exclamation-triangle me-1"></i>' + composite + ' composés</span>' +
+            '<span class="stat-badge" style="background:#d1fae5;color:#065f46;">' +
+                '<i class="bi bi-check-circle me-1"></i>' + simple + ' simples</span>';
+    }
+
+    // ==================== STEP 4: DOWNLOAD ====================
+    async function downloadResult() {
+        const btn = document.getElementById('downloadBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Génération en cours...';
+
+        try {
+            const response = await fetch('/api/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file_id: state.fileId,
+                    column_index: state.columnIndex,
+                    names: state.names
+                })
+            });
+
+            if (!response.ok) {
+                let errMsg = 'Erreur serveur';
+                try { const err = await response.json(); errMsg = err.error || errMsg; } catch (e) {}
+                throw new Error(errMsg);
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'resultat_prenoms_noms.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('Fichier téléchargé avec succès !', 'success');
+            goToStep(4);
+        } catch (err) {
+            showToast(err.message, 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-download me-2"></i>Télécharger le résultat';
+        }
+    }
+
+    function resetApp() {
+        if (state.fileId) {
+            fetch('/api/cleanup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file_id: state.fileId })
+            }).catch(() => {});
+        }
+
+        state.fileId = null;
+        state.headers = [];
+        state.preview = [];
+        state.rowCount = 0;
+        state.filename = '';
+        state.columnIndex = null;
+        state.names = [];
+        state.nameMap = {};
+        state.currentPage = 1;
+        state.searchQuery = '';
+        state.filter = 'all';
+
+        document.getElementById('fileInput').value = '';
+        goToStep(1);
+    }
+
+    // ==================== UTILITIES ====================
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(str);
+        return div.innerHTML;
+    }
+
+    function showLoading(show, text) {
+        const el = document.getElementById('loading');
+        if (show) {
+            document.getElementById('loadingText').textContent = text || 'Chargement...';
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
+    }
+
+    function showToast(message, type) {
+        type = type || 'info';
+        const container = document.getElementById('toastContainer');
+        const id = 'toast-' + Date.now();
+        const icons = {
+            success: 'check-circle-fill',
+            danger: 'exclamation-circle-fill',
+            warning: 'exclamation-triangle-fill',
+            info: 'info-circle-fill'
+        };
+
+        const div = document.createElement('div');
+        div.id = id;
+        div.className = 'toast align-items-center text-bg-' + type + ' border-0 show mb-2';
+        div.setAttribute('role', 'alert');
+        div.innerHTML =
+            '<div class="d-flex">' +
+            '<div class="toast-body"><i class="bi bi-' + (icons[type] || icons.info) +
+            ' me-2"></i>' + escapeHtml(message) + '</div>' +
+            '<button type="button" class="btn-close btn-close-white me-2 m-auto" ' +
+            'onclick="document.getElementById(\'' + id + '\').remove()"></button>' +
+            '</div>';
+
+        container.appendChild(div);
+        setTimeout(() => { const el = document.getElementById(id); if (el) el.remove(); }, 5000);
+    }
+    </script>
+</body>
+</html>
